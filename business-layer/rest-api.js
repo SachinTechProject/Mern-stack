@@ -80,6 +80,28 @@ app.post("/register-user", (req, res) => {
 });
 
 
+app.post("/register-admin", (req, res) => {
+    console.log(req.body); // Log the request body to check the incoming data
+
+    var user = {
+        UserId: req.body.UserId,
+        UserName: req.body.UserName, 
+        Password: req.body.Password, 
+        Email: req.body.Email, 
+    };
+    // Proceed to insert user if validation passes
+    mongoClient.connect(conString).then(clientObject => {
+        var database = clientObject.db("react-video");
+        database.collection("tbladmin").insertOne(user).then(() => {
+            console.log('User Registered');
+            res.json({ message: "admin Registered Successfully" });
+        });
+    }).catch(error => {
+        console.error(error);
+        res.status(500).json({ message: "Database Connection Failed" });
+    });
+});
+
 app.get("/get-admin", (req, res)=>{
     mongoClient.connect(conString).then(clientObject=>{
         var database = clientObject.db("react-video");
